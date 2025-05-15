@@ -2,7 +2,32 @@ import { Request, Response, NextFunction } from 'express';
 import { userService } from '../services';
 import { CreateUserDto, ApiResponse } from '../types';
 
+/**
+ * UserController handles all HTTP requests related to user management.
+ * Implements RESTful API endpoints for user CRUD operations, authentication,
+ * and user-specific business logic including purchase history and statistics.
+ * 
+ * @class UserController
+ * @implements Controller pattern for user resources
+ * @module Controllers
+ */
 export class UserController {
+  /**
+   * Creates a new user account in the system.
+   * 
+   * @param {Request} req - Express request object containing user data in body
+   * @param {Response} res - Express response object
+   * @param {NextFunction} next - Express next middleware function for error handling
+   * 
+   * @returns {Promise<void>} - Returns 201 status with created user data
+   * 
+   * @throws {ApiError} - 409 if email already exists
+   * @throws {ApiError} - 400 if validation fails
+   * 
+   * @example
+   * POST /api/v1/users
+   * Body: { email: "user@example.com", name: "John Doe" }
+   */
   async createUser(req: Request, res: Response, next: NextFunction) {
     try {
       const userData: CreateUserDto = req.body;
@@ -20,6 +45,17 @@ export class UserController {
     }
   }
 
+  /**
+   * Retrieves a user by their unique identifier.
+   * 
+   * @param {Request} req - Express request object with user ID in params
+   * @param {Response} res - Express response object
+   * @param {NextFunction} next - Express next middleware function
+   * 
+   * @returns {Promise<void>} - Returns user data if found
+   * 
+   * @throws {ApiError} - 404 if user not found
+   */
   async getUserById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
@@ -36,10 +72,22 @@ export class UserController {
     }
   }
 
+  /**
+   * Searches for a user by email address.
+   * 
+   * @param {Request} req - Express request object with email in query params
+   * @param {Response} res - Express response object
+   * @param {NextFunction} next - Express next middleware function
+   * 
+   * @returns {Promise<void>} - Returns user data if found
+   * 
+   * @throws {ApiError} - 404 if user not found
+   */
   async getUserByEmail(req: Request, res: Response, next: NextFunction) {
     try {
       const { email } = req.query;
       
+      // FIXME: This manual validation should be handled by validation middleware
       if (!email) {
         res.status(400).json({
           success: false,
@@ -61,9 +109,22 @@ export class UserController {
     }
   }
 
+  /**
+   * Retrieves paginated list of films purchased by a specific user.
+   * 
+   * @param {Request} req - Express request object with userId in params
+   * @param {Response} res - Express response object
+   * @param {NextFunction} next - Express next middleware function
+   * 
+   * @query {number} page - Page number (defaults to 1)
+   * @query {number} limit - Items per page (defaults to 20)
+   * 
+   * @returns {Promise<void>} - Returns paginated list of purchased films
+   */
   async getUserPurchasedFilms(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = req.params.userId;
+      // TODO: Extract pagination logic to shared utility or middleware
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 20;
       
@@ -78,6 +139,15 @@ export class UserController {
     }
   }
 
+  /**
+   * Checks if a specific user has purchased a specific film.
+   * 
+   * @param {Request} req - Express request object with userId and filmId in params
+   * @param {Response} res - Express response object
+   * @param {NextFunction} next - Express next middleware function
+   * 
+   * @returns {Promise<void>} - Returns boolean indicating purchase status
+   */
   async checkFilmPurchased(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId, filmId } = req.params;
@@ -92,6 +162,15 @@ export class UserController {
     }
   }
 
+  /**
+   * Retrieves comprehensive statistics for a user's activity.
+   * 
+   * @param {Request} req - Express request object with userId in params
+   * @param {Response} res - Express response object
+   * @param {NextFunction} next - Express next middleware function
+   * 
+   * @returns {Promise<void>} - Returns user statistics (total purchases, spending, etc.)
+   */
   async getUserStats(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = req.params;
@@ -106,6 +185,15 @@ export class UserController {
     }
   }
 
+  /**
+   * Retrieves complete purchase history for a user.
+   * 
+   * @param {Request} req - Express request object with userId in params
+   * @param {Response} res - Express response object
+   * @param {NextFunction} next - Express next middleware function
+   * 
+   * @returns {Promise<void>} - Returns array of purchase transactions
+   */
   async getUserPurchaseHistory(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = req.params;
@@ -120,8 +208,21 @@ export class UserController {
     }
   }
 
+  /**
+   * Retrieves paginated list of all users in the system.
+   * 
+   * @param {Request} req - Express request object with query parameters
+   * @param {Response} res - Express response object
+   * @param {NextFunction} next - Express next middleware function
+   * 
+   * @query {number} page - Page number (defaults to 1)
+   * @query {number} limit - Items per page (defaults to 20)
+   * 
+   * @returns {Promise<void>} - Returns paginated user list with metadata
+   */
   async getAllUsers(req: Request, res: Response, next: NextFunction) {
     try {
+      
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 20;
       
@@ -136,37 +237,4 @@ export class UserController {
     }
   }
 
-  async updateUser(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { id } = req.params;
-      const updateData = req.body;
-      
-      const user = await userService.updateUser(id, updateData);
-      
-      const response: ApiResponse<typeof user> = {
-        success: true,
-        data: user,
-        message: 'User updated successfully'
-      };
-      
-      res.json(response);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async deleteUser(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { id } = req.params;
-      
-      await userService.deleteUser(id);
-      
-      res.json({
-        success: true,
-        message: 'User deleted successfully'
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
 }

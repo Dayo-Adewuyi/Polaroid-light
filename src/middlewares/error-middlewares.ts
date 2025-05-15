@@ -137,7 +137,6 @@ export const notFoundHandler = (
     method: req.method,
     url: req.url,
     ip: req.ip,
-    userAgent: req.get('user-agent')
   });
 
   res.status(404).json({

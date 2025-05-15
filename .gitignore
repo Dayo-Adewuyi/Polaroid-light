@@ -5,3 +5,7 @@ dist/
 *.log
 .DS_Store
 package-lock.json
+coverage/
+.vscode/
+.env.test
+logs/

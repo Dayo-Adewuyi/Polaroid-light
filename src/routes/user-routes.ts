@@ -66,17 +66,6 @@ router.get(
   asyncHandler(userController.getUserPurchaseHistory)
 );
 
-router.put(
-  "/users/:id",
-  userValidation.id,
-  userValidation.update,
-  asyncHandler(userController.updateUser)
-);
 
-router.delete(
-  "/users/:id",
-  userValidation.id,
-  asyncHandler(userController.deleteUser)
-);
 
 export default router;

@@ -9,11 +9,7 @@ import {
 const router = Router();
 const filmController = new FilmController();
 
-const searchRateLimiter = rateLimiter({
-  windowMs: 1 * 60 * 1000, 
-  max: 30,
-  message: 'Too many search requests'
-});
+
 
 const purchaseRateLimiter = rateLimiter({
   windowMs: 15 * 60 * 1000, 
@@ -32,18 +28,6 @@ router.get(
   asyncHandler(filmController.getAllFilms)
 );
 
-router.get(
-  '/films/search',
-  searchRateLimiter,
-  filmValidation.search,
-  asyncHandler(filmController.searchFilms)
-);
-
-router.get(
-  '/films/price-range',
-  filmValidation.priceRange,
-  asyncHandler(filmController.getFilmsByPriceRange)
-);
 
 router.get(
   '/films/:id',

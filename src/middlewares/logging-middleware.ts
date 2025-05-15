@@ -25,7 +25,6 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction) =
     method: req.method,
     url: req.url,
     ip: req.ip,
-    userAgent: req.get('user-agent'),
     userId:  req.headers['x-user-id'],
   });
 

@@ -1,8 +1,9 @@
-# Polaroid Light 
+# Polaroid Light
 
-A  RESTful API for managing film listings and user purchases, built with TypeScript, Express, Prisma, and PostgreSQL.
+A RESTful API for managing film listings and user purchases, built with TypeScript, Express, Prisma, and PostgreSQL.
 
 ## Table of Contents
+
 - [Overview](#overview)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
@@ -10,7 +11,6 @@ A  RESTful API for managing film listings and user purchases, built with TypeScr
 - [Setup & Installation](#setup--installation)
 - [Design Decisions](#design-decisions)
 - [Trade-offs & Time Constraints](#trade-offs--time-constraints)
-
 
 ## Overview
 
@@ -36,7 +36,7 @@ Polaroid Light is a film marketplace API that allows users to browse, purchase, 
 - **ORM**: Prisma
 - **Logging**: Winston
 - **Validation**: Joi
-- **Testing**: Jest 
+- **Testing**: Jest
 
 ## Architecture
 
@@ -71,7 +71,7 @@ src/
 
 ```bash
 # Clone the repository
-git clone 
+git clone
 cd polaroid-light
 
 # Make setup script executable
@@ -81,10 +81,10 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
-
 ### Manual Installation
 
 1. **Clone and install dependencies**
+
    ```bash
    git clone <repository-url>
    cd polaroid-light
@@ -92,6 +92,7 @@ chmod +x setup.sh
    ```
 
 2. **Configure environment**
+
    ```bash
    cp .env.sample .env
    # Edit .env with your database credentials
@@ -99,61 +100,51 @@ chmod +x setup.sh
 
 3. **Database setup**
    ```bash
-   # Generate Prisma client
-  npm run prisma:generate
-   
-   # Run migrations
+   npm run prisma:generate
+
 npm run prisma:migrate
-   ```
+
+````
 
 4. **Start the server**
-   ```bash
-   # Development
-   npm run dev
-   
-   # Production
-   npm run build
-   npm start
-   ```
+```bash
+# Development
+npm run dev
 
-
+# Production
+npm run build
+npm start
+````
 
 ## API Documentation
 
 ### Base URL
+
 ```
 http://localhost:3000/api/v1
 ```
-
-
 
 ### Endpoints
 
 #### Films
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| GET | `/films` | List all films (paginated) | No |
-| GET | `/films/:id` | Get film by ID | No |
-| GET | `/films/search?q=query` | Search films | No |
-| GET | `/films/price-range?minPrice=0&maxPrice=9999` | Filter by price | No |
-| POST | `/films` | Create new film | No |
-| PUT | `/films/:id` | Update film | No |
-| DELETE | `/films/:id` | Delete film | No |
-| POST | `/films/:id/purchase` | Purchase film | No |
+| Method | Endpoint                                      | Description                | Auth Required |
+| ------ | --------------------------------------------- | -------------------------- | ------------- |
+| GET    | `/films`                                      | List all films (paginated) | No            |
+| GET    | `/films/:id`                                  | Get film by ID             | No            |
+| POST   | `/films`                                      | Create new film            | No            |
+| PUT    | `/films/:id`                                  | Update film                | No            |
+| DELETE | `/films/:id`                                  | Delete film                | No            |
+| POST   | `/films/:id/purchase`                         | Purchase film              | No            |
 
 #### Users
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| GET | `/users` | List all users | No |
-| GET | `/users/:id` | Get user by ID | No |
-| POST | `/users` | Create new user | No |
-| PUT | `/users/:id` | Update user | No |
-| DELETE | `/users/:id` | Delete user | No |
-| GET | `/users/:userId/films` | Get user's purchased films | No |
-
-
+| Method | Endpoint               | Description                | Auth Required |
+| ------ | ---------------------- | -------------------------- | ------------- |
+| GET    | `/users`               | List all users             | No            |
+| GET    | `/users/:id`           | Get user by ID             | No            |
+| POST   | `/users`               | Create new user            | No            |
+| GET    | `/users/:userId/films` | Get user's purchased films | No            |
 
 ## Design Decisions
 
@@ -162,28 +153,29 @@ http://localhost:3000/api/v1
 **Decision**: Implemented a three-layer architecture with Controllers, Services, and Repositories.
 
 **Rationale**:
+
 - Clear separation of concerns
 - Testable business logic
 - Database-agnostic service layer
 - Easy to mock repositories for testing
-
 
 ### 2. Prisma as ORM
 
 **Decision**: Used Prisma instead of raw SQL or other ORMs.
 
 **Rationale**:
+
 - Type-safe database queries
 - Automatic migration management
 - Built-in connection pooling
 - Excellent TypeScript integration
-
 
 ### 3. Comprehensive Error Handling
 
 **Decision**: Centralized error handling with custom error types.
 
 **Rationale**:
+
 - Consistent error responses
 - Better debugging
 - Client-friendly error messages
@@ -194,18 +186,16 @@ http://localhost:3000/api/v1
 **Decision**: Winston for structured logging.
 
 **Rationale**:
+
 - Performance monitoring
 - Debug capabilities
 
-
-
 ### Running Tests
+
 ```bash
 npm run test
 
 ```
-
-
 
 ## Performance Considerations
 
@@ -222,6 +212,5 @@ npm run test
 3. **XSS Protection**: Helmet.js security headers
 4. **Rate Limiting**: Prevent API abuse
 5. **CORS**: Configured for specific origins
-
 
 ---

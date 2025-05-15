@@ -83,30 +83,7 @@ export class FilmService {
     return await this.purchaseRepository.createPurchase(user.id, filmId);
   }
 
-  async searchFilms(query: string, page: number = 1, limit: number = 20) {
-    if (!query || query.trim().length === 0) {
-      throw new ApiError(400, 'Search query is required');
-    }
 
-    return this.filmRepository.search(query.trim(), page, limit);
-  }
-
-  async getFilmsByPriceRange(
-    minPrice: number,
-    maxPrice: number,
-    page: number = 1,
-    limit: number = 20
-  ) {
-    if (minPrice < 0 || maxPrice < 0) {
-      throw new ApiError(400, 'Price cannot be negative');
-    }
-
-    if (minPrice > maxPrice) {
-      throw new ApiError(400, 'Minimum price cannot be greater than maximum price');
-    }
-
-    return this.filmRepository.findByPriceRange(minPrice, maxPrice, page, limit);
-  }
 
   async updateFilm(id: string, data: Partial<CreateFilmDto>): Promise<Film> {
     await this.getFilmById(id);
