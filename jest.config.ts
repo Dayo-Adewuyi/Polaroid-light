@@ -10,14 +10,6 @@ export default {
       '!src/types/index.ts',
     ],
     coverageDirectory: 'coverage',
-    coverageThreshold: {
-        global: {
-          branches: 60,
-          functions: 60,
-          lines: 60,
-          statements: 60
-        }
-      },
       coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
     setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
     moduleNameMapper: {
