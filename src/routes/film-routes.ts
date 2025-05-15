@@ -1,0 +1,88 @@
+import { Router } from 'express';
+import { FilmController } from '../controllers/film-controllers';
+import { 
+  filmValidation, 
+
+  asyncHandler,
+  rateLimiter,
+} from '../middlewares';
+const router = Router();
+const filmController = new FilmController();
+
+const searchRateLimiter = rateLimiter({
+  windowMs: 1 * 60 * 1000, 
+  max: 30,
+  message: 'Too many search requests'
+});
+
+const purchaseRateLimiter = rateLimiter({
+  windowMs: 15 * 60 * 1000, 
+  max: 10,
+  message: 'Too many purchase attempts'
+});
+
+const createRateLimiter =  rateLimiter({
+  windowMs: 15 * 60 * 1000, 
+  max: 20,
+  message: 'Too many film uploads'
+});
+
+router.get(
+  '/films',
+  asyncHandler(filmController.getAllFilms)
+);
+
+router.get(
+  '/films/search',
+  searchRateLimiter,
+  filmValidation.search,
+  asyncHandler(filmController.searchFilms)
+);
+
+router.get(
+  '/films/price-range',
+  filmValidation.priceRange,
+  asyncHandler(filmController.getFilmsByPriceRange)
+);
+
+router.get(
+  '/films/:id',
+  filmValidation.id,
+  asyncHandler(filmController.getFilmById)
+);
+
+router.get(
+  '/films/:id/stats',
+  filmValidation.id,
+  asyncHandler(filmController.getFilmStats)
+);
+
+router.post(
+  '/films',
+  createRateLimiter,
+  filmValidation.create,
+  asyncHandler(filmController.createFilm)
+);
+
+router.post(
+  '/films/:id/purchase',
+  purchaseRateLimiter,
+  filmValidation.id,
+  filmValidation.purchase,
+  asyncHandler(filmController.purchaseFilm)
+);
+
+router.put(
+  '/films/:id',
+  filmValidation.id,
+  filmValidation.update,
+  asyncHandler(filmController.updateFilm)
+);
+
+router.delete(
+  '/films/:id',
+  filmValidation.id,
+  asyncHandler(filmController.deleteFilm)
+);
+
+export default router;
