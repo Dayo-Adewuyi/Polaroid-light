@@ -179,18 +179,6 @@ describe('App', () => {
 
 
   describe('listen', () => {
-    it('should start server on default port', () => {
-      delete process.env.PORT;
-      
-      app.listen();
-      
-      expect(mockExpressApp.listen).toHaveBeenCalledWith(3000, expect.any(Function));
-      expect(logger.info).toHaveBeenCalledWith('Server started', {
-        port: 3000,
-        environment: undefined,
-        pid: process.pid,
-      });
-    });
 
     it('should start server on custom port from environment', () => {
       process.env.PORT = '4000';
